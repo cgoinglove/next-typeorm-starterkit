@@ -6,7 +6,6 @@ interface Class {
   new (...args: any[]): any;
 }
 
-/** @Read Service 의 함수는 async 하지 않을 일이 없어서 무조건 커넥션 홀더를 거치고 실행시킨다 async 한 connection 과정을 bootstrap 하기 힘든 프레임워크다 여럿 시도를 했는데 이게 최선인 것 같다.*/
 const serviceAsyncProxy = (obj: any) =>
   new Proxy(obj, {
     get(target, key) {
@@ -70,9 +69,14 @@ export function Service(constructor: new (...args: any[]) => any) {
   Provider.registerService(constructor);
 }
 
-export function Inject<T extends Class>(target: T): any {
-  return function (constructor: Function) {
-    constructor.prototype[target.name] = Provider.getService(target);
+export function Inject<Service extends ObjectLiteral>(
+  service: new (...args: any[]) => Service,
+): any {
+  return (target: ObjectLiteral, filedName: string, index?: number) => {
+    Object.defineProperty(target, filedName, {
+      writable: false,
+      value: Provider.getService(service),
+    });
   };
 }
 
