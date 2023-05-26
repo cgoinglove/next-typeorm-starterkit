@@ -8,7 +8,7 @@ export default async function handler(
   res: NextApiResponse,
 ) {
   const todoService = getService(TodoService);
-  const { content, id } = JSON.parse(req.body);
+  const { content, id } = req.body;
 
   if (req.method == 'POST') {
     console.log(content);

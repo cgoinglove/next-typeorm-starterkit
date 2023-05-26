@@ -7,6 +7,7 @@ import { TodoService } from '@/server/service/todo.service';
 import { Todo } from '@/server/entities/todo.entity';
 import Card from '@/components/Card';
 import { useRef, useState } from 'react';
+import axios from 'axios';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -26,15 +27,12 @@ export default function Home(props: { items: Todo[] }) {
   const createTodo = () => {
     const content = input.current?.value;
     if (!content) return alert('내용을 작성하세요~');
-    fetch('http://localhost:3000/api/todo', {
-      method: 'POST',
-      body: JSON.stringify({ content }),
-    })
+
+    axios
+      .post('http://localhost:3000/api/todo', { content })
       .then(response => {
         if (response.status == 200) {
-          response.json().then((data: Todo) => {
-            setTodo(before => [...before, data]);
-          });
+          setTodo(before => [...before, response.data]);
         }
       })
       .catch(error => {
@@ -44,10 +42,7 @@ export default function Home(props: { items: Todo[] }) {
   };
 
   const todoComplete = (id: string) => {
-    fetch('http://localhost:3000/api/todo', {
-      method: 'PUT',
-      body: JSON.stringify({ id }),
-    }).then(() => {
+    axios.put('http://localhost:3000/api/todo', { id }).then(() => {
       setTodo(before => {
         const list = [...before];
         list.find(todo => id == todo.id)!.complete = true;
