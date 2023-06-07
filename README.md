@@ -1,1 +1,1 @@
-![leanmore](https://cgoing-log.site/article/NextjsServiceLayer)
+[leanmore](https://cgoing-log.site/article/NextjsServiceLayer)
